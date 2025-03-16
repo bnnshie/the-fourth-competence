@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Notes App</title>
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@3.x/dist/vuetify.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="notes-app">
+        <v-app>
+            <v-container>
+                <v-row>
+                    <v-col>
+                        <v-toolbar>
+                            <v-toolbar-title>Заметки</v-toolbar-title>
+                        </v-toolbar>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-text-field v-model="newNote" label="Добавить заметку" @keyup.enter="addNote"></v-text-field>
+                        <v-btn @click="addNote" color="primary">Добавить</v-btn>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-list>
+                            <v-list-item-group>
+                                <v-list-item v-for="(note, index) in notes" :key="index">
+                                    <v-list-item-content>
+                                        <v-list-item-title>{{ note.text }}</v-list-item-title>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                        <v-btn icon @click="editNote(index)">
+                                            <v-icon>mdi-pencil</v-icon>
+                                        </v-btn>
+                                        <v-btn icon @click="deleteNote(index)">
+                                            <v-icon>mdi-delete</v-icon>
+                                        </v-btn>
+                                    </v-list-item-action>
+                                </v-list-item>
+                            </v-list-item-group>
+                        </v-list>
+                    </v-col>
+                </v-row>
+            </v-container>
+        </v-app>
+    </div>
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.x/dist/vuetify.js"></script>
+    <script>
+        const { createApp } = Vue;
+        const { createVuetify } = Vuetify;
+        const vuetify = createVuetify();
+        const app = createApp({
+            data() {
+                return {
+                    newNote: '',
+                    notes: []
+                };
+            },
+            methods: {
+                addNote() {
+                    if (this.newNote.trim() !== '') {
+                        this.notes.push({ text: this.newNote });
+                        this.newNote = '';
+                    }
+                },
+                deleteNote(index) {
+                    this.notes.splice(index, 1);
+                },
+                editNote(index) {
+                    const updatedText = prompt("Edit your note:", this.notes[index].text);
+                    if (updatedText !== null && updatedText.trim() !== '') {
+                        this.notes[index].text = updatedText;
+                    }
+                }
+            }
+        })
+        app.use(vuetify);
+        app.mount('#notes-app');
+    </script>
+</body>
+</html>
